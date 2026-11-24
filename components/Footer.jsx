@@ -26,6 +26,7 @@ export default function Footer() {
             <li><Link href="/gioi-thieu-cpstech">Giới thiệu</Link></li>
             <li><Link href="/cua-hang">Cửa hàng</Link></li>
             <li><Link href="/tin-tuc">Tin tức</Link></li>
+            <li><Link href="/video">Video</Link></li>
             <li><Link href="/lien-he">Liên hệ – Gửi yêu cầu</Link></li>
           </ul>
         </div>

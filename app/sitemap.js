@@ -6,7 +6,7 @@ export const revalidate = 3600;
 export default async function sitemap() {
   const [cats, products, posts] = await Promise.all([getCategories(), getProducts(2000), getPostSlugs()]);
   const base = SITE.url.replace(/\/$/, '');
-  const statics = ['', '/cua-hang', '/gioi-thieu-cpstech', '/dich-vu', '/tin-tuc', '/lien-he'];
+  const statics = ['', '/cua-hang', '/gioi-thieu-cpstech', '/dich-vu', '/tin-tuc', '/video', '/lien-he'];
   return [
     ...statics.map((p) => ({ url: `${base}${p}` })),
     ...cats.map((c) => ({ url: `${base}/${c.slug}` })),

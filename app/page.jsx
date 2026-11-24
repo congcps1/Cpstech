@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import ProductCard from '@/components/ProductCard';
 import ContactForm from '@/components/ContactForm';
-import { getCategories, getFeaturedProducts, getLatestPosts } from '@/lib/db';
+import VideoGrid from '@/components/VideoGrid';
+import { getFeaturedProducts, getLatestPosts } from '@/lib/db';
+import { getVideos, YT_CHANNEL_URL } from '@/lib/youtube';
 import { SITE } from '@/lib/site';
 
 export const revalidate = 300;
@@ -26,16 +28,8 @@ const PROJECTS = [
   { title: 'Chuỗi nhà hàng phở', text: 'Máy chấm công khuôn mặt, quản lý ca làm cho nhân viên.' },
 ];
 
-const CAT_ICONS = {
-  'may-cham-cong': '🕘',
-  'he-thong-thiet-bi-kiem-soat-ra-vao': '🚪',
-  'khoa-dien-tu-thong-minh': '🔐',
-  'phan-mem': '💻',
-};
-
 export default async function Home() {
-  const [cats, featured, posts] = await Promise.all([getCategories(), getFeaturedProducts(8), getLatestPosts(3)]);
-  const roots = cats.filter((c) => !c.parent_slug);
+  const [featured, posts, videos] = await Promise.all([getFeaturedProducts(8), getLatestPosts(3), getVideos(4)]);
 
   return (
     <>
@@ -66,25 +60,6 @@ export default async function Home() {
               <div><strong>{p.title}</strong><small>{p.text}</small></div>
             </div>
           ))}
-        </div>
-      </section>
-
-      <section className="section">
-        <div className="container">
-          <h2 className="section-title">Danh mục sản phẩm</h2>
-          <div className="cat-grid">
-            {roots.map((c) => (
-              <Link key={c.slug} href={`/${c.slug}`} className="card cat-card">
-                <span className="cat-icon">{CAT_ICONS[c.slug] || '🔧'}</span>
-                <h3>{c.name}</h3>
-                <ul>
-                  {cats.filter((s) => s.parent_slug === c.slug).slice(0, 5).map((s) => (
-                    <li key={s.slug}>{s.name}</li>
-                  ))}
-                </ul>
-              </Link>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -121,6 +96,21 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {videos.length > 0 && (
+        <section className="section">
+          <div className="container">
+            <div className="section-head">
+              <h2 className="section-title">Video</h2>
+              <Link href="/video">Xem tất cả →</Link>
+            </div>
+            <VideoGrid videos={videos} />
+            <div style={{ textAlign: 'center', marginTop: 24 }}>
+              <a href={YT_CHANNEL_URL} target="_blank" rel="noopener" className="btn btn-yt">Đăng ký kênh YouTube</a>
+            </div>
+          </div>
+        </section>
+      )}
 
       {posts.length > 0 && (
         <section className="section section-alt">

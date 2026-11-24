@@ -47,7 +47,7 @@ h1 { font-size: clamp(1.7rem, 3.5vw, 2.4rem); }
 .logo-text small { font-size: .7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
 .logo-light .logo-text strong { color: #fff; }
 .logo-light .logo-text small { color: #9fb0c7; }
-.nav { display: flex; align-items: center; gap: 1.1rem; font-weight: 500; font-size: .95rem; }
+.nav { display: flex; align-items: center; gap: .9rem; font-weight: 500; font-size: .9rem; white-space: nowrap; }
 .nav a:not(.btn):hover { color: var(--accent); }
 .nav-toggle, .nav-burger { display: none; }
 
@@ -159,7 +159,7 @@ h1 { font-size: clamp(1.7rem, 3.5vw, 2.4rem); }
   .product-grid, .cat-grid { grid-template-columns: repeat(3, 1fr); }
   .footer-grid { grid-template-columns: 1fr 1fr; }
 }
-@media (max-width: 860px) {
+@media (max-width: 1100px) {
   .nav-burger { display: block; font-size: 1.6rem; cursor: pointer; }
   .nav { display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; flex-direction: column; align-items: stretch; padding: 1rem 4%; box-shadow: var(--shadow); }
   .nav-row { position: relative; }
@@ -196,3 +196,18 @@ h1 { font-size: clamp(1.7rem, 3.5vw, 2.4rem); }
 .thumbs img { width: 100%; height: 100%; object-fit: contain; }
 .pagination { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; }
 .post-card h3 { font-size: 1rem; }
+
+/* Video */
+.video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.video-card { padding: 0; overflow: hidden; }
+.video-card h3 { font-size: .95rem; font-weight: 600; padding: 12px 14px 16px; margin: 0; }
+.video-frame { position: relative; aspect-ratio: 16/9; background: #000; }
+.video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.video-thumb { position: absolute; inset: 0; width: 100%; padding: 0; border: 0; cursor: pointer; background: #000; }
+.video-thumb img { width: 100%; height: 100%; object-fit: cover; opacity: .9; transition: .2s; }
+.video-thumb:hover img { opacity: 1; }
+.play-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 64px; height: 44px; border-radius: 12px; background: #ff0000; color: #fff; display: grid; place-items: center; font-size: 1.2rem; box-shadow: 0 4px 14px rgba(0,0,0,.35); }
+.btn-yt { background: #ff0000; }
+.btn-yt:hover { background: #cc0000; }
+@media (max-width: 1024px) { .video-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .video-grid { grid-template-columns: 1fr; } }
