@@ -2,14 +2,18 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import ProductCard from '@/components/ProductCard';
 import ContactForm from '@/components/ContactForm';
+import Gallery from '@/components/Gallery';
+import Pagination from '@/components/Pagination';
 import {
-  getCategories, getCategory, getProduct, getProductsByCategories, getPost, descendants,
+  getCategories, getCategory, getProduct, getCategoryProductsPage, getRelatedProducts,
+  getPost, getPage, getLatestPosts, descendants,
 } from '@/lib/db';
 import { SITE, formatVND } from '@/lib/site';
 
 export const revalidate = 300;
 
 const clean = (s) => { try { return decodeURIComponent(s); } catch { return s; } };
+const strip = (h = '') => h.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 
 async function resolve(slug) {
   const cat = await getCategory(slug);
@@ -18,6 +22,8 @@ async function resolve(slug) {
   if (product) return { type: 'product', product };
   const post = await getPost(slug);
   if (post) return { type: 'post', post };
+  const page = await getPage(slug);
+  if (page) return { type: 'page', page };
   return null;
 }
 
@@ -25,9 +31,18 @@ export async function generateMetadata({ params }) {
   const { slug } = await params;
   const r = await resolve(clean(slug));
   if (!r) return { title: 'Không tìm thấy trang' };
-  if (r.type === 'category') return { title: r.cat.name, description: r.cat.description || `${r.cat.name} chính hãng tại CPSTECH. Tư vấn, lắp đặt, bảo hành tận nơi.` };
-  if (r.type === 'product') return { title: r.product.name, description: r.product.summary || `${r.product.name} – chính hãng, bảo hành 1 đổi 1. Liên hệ CPSTECH ${SITE.hotline}.`, openGraph: { images: r.product.image_url ? [r.product.image_url] : [] } };
-  return { title: r.post.title, description: r.post.excerpt };
+  const canonical = `/${clean(slug)}`;
+  if (r.type === 'category')
+    return { title: r.cat.name, alternates: { canonical }, description: r.cat.description || `${r.cat.name} chính hãng tại CPSTECH. Tư vấn, lắp đặt, bảo hành tận nơi.` };
+  if (r.type === 'product')
+    return {
+      title: r.product.name, alternates: { canonical },
+      description: (r.product.summary || `${r.product.name} – chính hãng, bảo hành 1 đổi 1. Liên hệ CPSTECH ${SITE.hotline}.`).slice(0, 160),
+      openGraph: { images: r.product.image_url ? [r.product.image_url] : [] },
+    };
+  if (r.type === 'post')
+    return { title: r.post.title, alternates: { canonical }, description: r.post.excerpt?.slice(0, 160), openGraph: { type: 'article', images: r.post.cover_url ? [r.post.cover_url] : [] } };
+  return { title: r.page.title, alternates: { canonical }, description: strip(r.page.content).slice(0, 160) };
 }
 
 function Breadcrumb({ trail }) {
@@ -48,17 +63,18 @@ function trailOf(all, slug) {
   return out;
 }
 
-export default async function SlugPage({ params }) {
+export default async function SlugPage({ params, searchParams }) {
   const { slug: raw } = await params;
+  const sp = (await searchParams) || {};
   const slug = clean(raw);
   const r = await resolve(slug);
   if (!r) notFound();
-  const all = await getCategories();
 
   if (r.type === 'category') {
+    const all = await getCategories();
     const { cat } = r;
     const children = all.filter((c) => c.parent_slug === cat.slug);
-    const products = await getProductsByCategories(descendants(all, cat.slug));
+    const { items, hasNext, page } = await getCategoryProductsPage(descendants(all, cat.slug), sp.trang);
     return (
       <div className="container page">
         <Breadcrumb trail={trailOf(all, cat.slug)} />
@@ -69,8 +85,11 @@ export default async function SlugPage({ params }) {
             {children.map((c) => <Link key={c.slug} href={`/${c.slug}`} className="chip">{c.name}</Link>)}
           </div>
         )}
-        {products.length ? (
-          <div className="product-grid">{products.map((p) => <ProductCard key={p.slug} p={p} />)}</div>
+        {items.length ? (
+          <>
+            <div className="product-grid">{items.map((p) => <ProductCard key={p.slug} p={p} />)}</div>
+            <Pagination base={`/${cat.slug}`} page={page} hasNext={hasNext} />
+          </>
         ) : (
           <div className="empty card">
             <p>Danh mục đang được cập nhật sản phẩm. Vui lòng liên hệ để được tư vấn và báo giá.</p>
@@ -82,18 +101,16 @@ export default async function SlugPage({ params }) {
   }
 
   if (r.type === 'product') {
+    const all = await getCategories();
     const p = r.product;
     const hasSale = p.sale_price && p.price && p.sale_price < p.price;
-    const related = p.category_slug
-      ? (await getProductsByCategories([p.category_slug])).filter((x) => x.slug !== p.slug).slice(0, 4)
-      : [];
+    const related = await getRelatedProducts(p.slug, p.category_slug);
+    const images = p.images?.length ? p.images : p.image_url ? [p.image_url] : [];
     return (
       <div className="container page">
         <Breadcrumb trail={[...trailOf(all, p.category_slug), { slug: p.slug, name: p.name }]} />
         <div className="product-detail">
-          <div className="card product-detail-img">
-            {p.image_url ? <img src={p.image_url} alt={p.name} /> : <div className="img-placeholder">CPSTECH</div>}
-          </div>
+          <Gallery images={images} alt={p.name} />
           <div>
             {p.brand && <span className="brand">{p.brand}</span>}
             <h1>{p.name}</h1>
@@ -105,7 +122,7 @@ export default async function SlugPage({ params }) {
                 </>
               ) : <strong className="contact-price">Liên hệ báo giá</strong>}
             </div>
-            {p.summary && <p>{p.summary}</p>}
+            {p.short_html ? <div className="prose short" dangerouslySetInnerHTML={{ __html: p.short_html }} /> : null}
             <ul className="checks">
               <li>Sản phẩm chính hãng, đầy đủ hóa đơn VAT</li>
               <li>Bảo hành 1 đổi 1 trong 10 ngày đầu</li>
@@ -123,7 +140,10 @@ export default async function SlugPage({ params }) {
           </div>
         </div>
         {p.content && (
-          <section className="card prose" dangerouslySetInnerHTML={{ __html: p.content }} />
+          <section className="card prose">
+            <h2>Thông tin chi tiết</h2>
+            <div dangerouslySetInnerHTML={{ __html: p.content }} />
+          </section>
         )}
         {related.length > 0 && (
           <section className="section-tight">
@@ -135,14 +155,43 @@ export default async function SlugPage({ params }) {
     );
   }
 
+  if (r.type === 'page') {
+    const pg = r.page;
+    const hasH1 = /<h1[\s>]/i.test(pg.content || '');
+    return (
+      <article className="container page narrow">
+        <Breadcrumb trail={[]} />
+        {!hasH1 && <h1>{pg.title}</h1>}
+        <div className="prose" dangerouslySetInnerHTML={{ __html: pg.content || '' }} />
+        <div className="card" style={{ marginTop: 32 }}>
+          <h3>Cần tư vấn?</h3>
+          <ContactForm compact />
+        </div>
+      </article>
+    );
+  }
+
   const post = r.post;
+  const latest = (await getLatestPosts(4)).filter((x) => x.slug !== post.slug).slice(0, 3);
   return (
     <article className="container page narrow">
       <Breadcrumb trail={[{ slug: 'tin-tuc', name: 'Tin tức' }]} />
       <h1>{post.title}</h1>
       <p className="muted">{new Date(post.published_at).toLocaleDateString('vi-VN')}</p>
-      {post.cover_url && <img className="cover" src={post.cover_url} alt={post.title} />}
       <div className="prose" dangerouslySetInnerHTML={{ __html: post.content || '' }} />
+      {latest.length > 0 && (
+        <section className="section-tight">
+          <h2 className="section-title">Bài viết mới</h2>
+          <div className="project-grid">
+            {latest.map((x) => (
+              <Link key={x.slug} href={`/${x.slug}`} className="card post-card">
+                {x.cover_url && <img src={x.cover_url} alt={x.title} loading="lazy" />}
+                <h3>{x.title}</h3>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
     </article>
   );
 }

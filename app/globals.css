@@ -175,3 +175,24 @@ h1 { font-size: clamp(1.7rem, 3.5vw, 2.4rem); }
   .footer-grid { grid-template-columns: 1fr; }
   .product-body h3 { font-size: .88rem; }
 }
+
+/* Imported WordPress content */
+.prose { overflow-wrap: anywhere; }
+.prose * { font-family: inherit !important; font-size: inherit; max-width: 100%; }
+.prose span[style] { font-size: inherit !important; }
+.prose img { height: auto !important; border-radius: 8px; margin: 12px auto; }
+.prose iframe { width: 100%; aspect-ratio: 16/9; height: auto; border: 0; border-radius: 8px; }
+.prose table { width: 100% !important; border-collapse: collapse; display: block; overflow-x: auto; }
+.prose td, .prose th { border: 1px solid var(--line); padding: 6px 10px; }
+.prose h1 { font-size: clamp(1.6rem, 3vw, 2.1rem); }
+.prose h2 { font-size: 1.35rem; margin-top: 1.4em; }
+.prose h3 { font-size: 1.15rem; margin-top: 1.2em; }
+.prose a { color: var(--accent); }
+.prose.short { color: var(--muted); }
+.prose.short p { margin: .25em 0; }
+.thumbs { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.thumbs button { width: 64px; height: 64px; padding: 4px; border: 2px solid var(--line); border-radius: 8px; background: #fff; cursor: pointer; }
+.thumbs button.active { border-color: var(--accent); }
+.thumbs img { width: 100%; height: 100%; object-fit: contain; }
+.pagination { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; }
+.post-card h3 { font-size: 1rem; }

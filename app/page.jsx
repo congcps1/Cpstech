@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import ProductCard from '@/components/ProductCard';
 import ContactForm from '@/components/ContactForm';
-import { getCategories, getFeaturedProducts } from '@/lib/db';
+import { getCategories, getFeaturedProducts, getLatestPosts } from '@/lib/db';
 import { SITE } from '@/lib/site';
 
 export const revalidate = 300;
@@ -34,7 +34,7 @@ const CAT_ICONS = {
 };
 
 export default async function Home() {
-  const [cats, featured] = await Promise.all([getCategories(), getFeaturedProducts(8)]);
+  const [cats, featured, posts] = await Promise.all([getCategories(), getFeaturedProducts(8), getLatestPosts(3)]);
   const roots = cats.filter((c) => !c.parent_slug);
 
   return (
@@ -121,6 +121,25 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {posts.length > 0 && (
+        <section className="section section-alt">
+          <div className="container">
+            <div className="section-head">
+              <h2 className="section-title">Tin tức &amp; hướng dẫn</h2>
+              <Link href="/tin-tuc">Xem tất cả →</Link>
+            </div>
+            <div className="project-grid">
+              {posts.map((p) => (
+                <Link key={p.slug} href={`/${p.slug}`} className="card post-card">
+                  {p.cover_url && <img src={p.cover_url} alt={p.title} loading="lazy" />}
+                  <h3>{p.title}</h3>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </>
   );
 }
