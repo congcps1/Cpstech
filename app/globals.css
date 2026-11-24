@@ -109,7 +109,6 @@ h1 { font-size: clamp(1.7rem, 3.5vw, 2.4rem); }
 .stats-inline { background: var(--navy); border-radius: var(--radius); padding: 24px; margin: 24px 0; }
 
 .project-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-.post-card img { border-radius: 10px; margin-bottom: 12px; aspect-ratio: 16/9; object-fit: cover; width: 100%; }
 
 /* Pages */
 .page { padding: 36px 0 64px; }
@@ -195,7 +194,6 @@ h1 { font-size: clamp(1.7rem, 3.5vw, 2.4rem); }
 .thumbs button.active { border-color: var(--accent); }
 .thumbs img { width: 100%; height: 100%; object-fit: contain; }
 .pagination { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; }
-.post-card h3 { font-size: 1rem; }
 
 /* Video */
 .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
@@ -220,3 +218,43 @@ h1 { font-size: clamp(1.7rem, 3.5vw, 2.4rem); }
 .prose img[width] { width: auto; }
 .prose pre, .prose code { white-space: pre-wrap; }
 .prose > div > *:first-child, .prose > *:first-child { margin-top: 0; }
+
+/* ---- QA fixes ---- */
+.hero-card p, .hero-card .muted { color: var(--muted); }
+.section-head { flex-wrap: wrap; gap: .3rem 1rem; }
+.post-card { padding: 0; overflow: hidden; display: flex; flex-direction: column; transition: .2s; }
+.post-card:hover { transform: translateY(-3px); }
+.post-cover { aspect-ratio: 16/9; background: linear-gradient(135deg, var(--navy), var(--navy-2)); display: grid; place-items: center; }
+.post-cover img { width: 100%; height: 100%; object-fit: cover; }
+.post-cover span { color: rgba(255,255,255,.35); font-weight: 800; letter-spacing: 3px; }
+.post-body { padding: 14px 16px 18px; }
+.post-body h3 { font-size: 1rem; margin: 0 0 .3rem; }
+.post-body p { font-size: .9rem; margin: 0; }
+.khuyenmai-single-product { margin-top: 18px !important; }
+.khuyenmai-single-product ul { padding-left: 1.2rem; }
+
+@media (max-width: 1100px) {
+  .section { padding: 40px 0; }
+  .float-contact { right: 12px; bottom: 12px; gap: 8px; }
+  .float-btn { width: 48px; height: 48px; font-size: .75rem; }
+}
+@media (max-width: 560px) {
+  .section-title { font-size: 1.35rem; }
+  .video-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .video-card h3 { font-size: .82rem; padding: 8px 10px 12px; }
+  .play-btn { width: 44px; height: 30px; font-size: .9rem; }
+  .project-grid .post-card { flex-direction: row; }
+  .project-grid .post-cover { flex: 0 0 120px; aspect-ratio: auto; min-height: 90px; }
+  .project-grid .post-body { padding: 10px 12px; }
+  .project-grid .post-body h3 { font-size: .92rem; }
+  .project-grid .post-body p { display: none; }
+  .product-detail .hero-cta .btn { flex: 1 1 100%; text-align: center; }
+  .perk { align-items: flex-start; }
+  .perk-icon { font-size: 1.4rem; }
+  .perk strong { font-size: .92rem; }
+  .perk small { font-size: .8rem; line-height: 1.35; display: block; }
+  .price strong { font-size: .98rem; }
+  .price del { font-size: .8rem; }
+  .breadcrumb { font-size: .8rem; }
+  .pagination .chip { font-size: .85rem; }
+}

@@ -1,3 +1,4 @@
+import PostCard from '@/components/PostCard';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import ProductCard from '@/components/ProductCard';
@@ -183,12 +184,7 @@ export default async function SlugPage({ params, searchParams }) {
         <section className="section-tight">
           <h2 className="section-title">Bài viết mới</h2>
           <div className="project-grid">
-            {latest.map((x) => (
-              <Link key={x.slug} href={`/${x.slug}`} className="card post-card">
-                {x.cover_url && <img src={x.cover_url} alt={x.title} loading="lazy" />}
-                <h3>{x.title}</h3>
-              </Link>
-            ))}
+            {latest.map((x) => <PostCard key={x.slug} p={x} />)}
           </div>
         </section>
       )}

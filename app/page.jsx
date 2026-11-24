@@ -1,3 +1,4 @@
+import PostCard from '@/components/PostCard';
 import Link from 'next/link';
 import ProductCard from '@/components/ProductCard';
 import ContactForm from '@/components/ContactForm';
@@ -120,12 +121,7 @@ export default async function Home() {
               <Link href="/tin-tuc">Xem tất cả →</Link>
             </div>
             <div className="project-grid">
-              {posts.map((p) => (
-                <Link key={p.slug} href={`/${p.slug}`} className="card post-card">
-                  {p.cover_url && <img src={p.cover_url} alt={p.title} loading="lazy" />}
-                  <h3>{p.title}</h3>
-                </Link>
-              ))}
+              {posts.map((p) => <PostCard key={p.slug} p={p} />)}
             </div>
           </div>
         </section>

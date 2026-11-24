@@ -1,3 +1,4 @@
+import PostCard from '@/components/PostCard';
 import Link from 'next/link';
 import Pagination from '@/components/Pagination';
 import { getPostsPage } from '@/lib/db';
@@ -16,13 +17,7 @@ export default async function News({ searchParams }) {
       ) : (
         <>
           <div className="project-grid">
-            {items.map((p) => (
-              <Link key={p.slug} href={`/${p.slug}`} className="card post-card">
-                {p.cover_url && <img src={p.cover_url} alt={p.title} loading="lazy" />}
-                <h3>{p.title}</h3>
-                {p.excerpt && <p className="muted">{p.excerpt.slice(0, 140)}…</p>}
-              </Link>
-            ))}
+            {items.map((p) => <PostCard key={p.slug} p={p} excerpt />)}
           </div>
           <Pagination base="/tin-tuc" page={page} hasNext={hasNext} />
         </>
