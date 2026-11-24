@@ -38,7 +38,7 @@ export async function generateMetadata({ params }) {
   if (r.type === 'product')
     return {
       title: r.product.name, alternates: { canonical },
-      description: (r.product.summary || `${r.product.name} – chính hãng, bảo hành 1 đổi 1. Liên hệ CPSTECH ${SITE.hotline}.`).slice(0, 160),
+      description: (r.product.summary || `${r.product.name} – chính hãng, đổi mới trong 1 tuần. Liên hệ CPSTECH ${SITE.hotline}.`).slice(0, 160),
       openGraph: { images: r.product.image_url ? [r.product.image_url] : [] },
     };
   if (r.type === 'post')
@@ -126,7 +126,7 @@ export default async function SlugPage({ params, searchParams }) {
             {p.short_html ? <div className="prose short" dangerouslySetInnerHTML={{ __html: p.short_html }} /> : null}
             <ul className="checks">
               <li>Sản phẩm chính hãng, đầy đủ hóa đơn VAT</li>
-              <li>Bảo hành 1 đổi 1 trong 10 ngày đầu</li>
+              <li>Đổi mới trong 1 tuần nếu có lỗi của nhà sản xuất</li>
               <li>Giao hàng trong 2 giờ nội thành, lắp đặt tận nơi</li>
               <li>Kiểm tra hàng rồi mới thanh toán</li>
             </ul>

@@ -11,12 +11,18 @@ export default function Footer() {
             <span className="logo-text"><strong>CPSTECH</strong><small>{SITE.tagline}</small></span>
           </div>
           <p className="muted-light">{SITE.description}</p>
+          <p className="footer-social">
+            <a href={SITE.facebook} target="_blank" rel="noopener">Facebook</a> ·{' '}
+            <a href={SITE.youtube} target="_blank" rel="noopener">YouTube</a> ·{' '}
+            <a href={SITE.zalo} target="_blank" rel="noopener">Zalo</a>
+          </p>
         </div>
         {SITE.offices.map((o) => (
           <div key={o.city}>
-            <h4>Văn phòng {o.city}</h4>
+            <h4>CPSTECH {o.city}</h4>
             <p>{o.address}</p>
             <p>ĐT: <a href={`tel:${o.tel}`}>{o.phone}</a></p>
+            <p>Email: <a href={`mailto:${o.email}`}>{o.email}</a></p>
           </div>
         ))}
         <div>
@@ -32,8 +38,8 @@ export default function Footer() {
         </div>
       </div>
       <div className="container footer-bottom">
-        <span>© {new Date().getFullYear()} CPSTECH. Bảo lưu mọi quyền.</span>
-        <span>{SITE.hours}</span>
+        <span>© {new Date().getFullYear()} CPSTECH – {SITE.company}</span>
+        <span>{SITE.payment}</span>
       </div>
       <div className="float-contact">
         <a href={SITE.zalo} target="_blank" rel="noopener" className="float-btn zalo">Zalo</a>

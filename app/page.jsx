@@ -10,7 +10,7 @@ import { SITE } from '@/lib/site';
 export const revalidate = 300;
 
 const PERKS = [
-  { icon: '🛡️', title: 'Bảo hành 1 đổi 1', text: 'Trong 10 ngày đầu sử dụng' },
+  { icon: '🛡️', title: 'Đổi mới trong 1 tuần', text: 'Nếu có lỗi của nhà sản xuất' },
   { icon: '✅', title: 'Sản phẩm chính hãng', text: 'Nhập khẩu, đầy đủ CO/CQ' },
   { icon: '🚚', title: 'Giao hàng nhanh', text: 'Trong 2 giờ nội thành' },
   { icon: '💵', title: 'Nhận hàng thanh toán', text: 'Kiểm tra hàng rồi mới trả tiền' },

@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { SITE } from '@/lib/site';
 
 export default function ContactForm({ productSlug = null, compact = false }) {
   const [state, setState] = useState('idle'); // idle | sending | ok | error
@@ -39,7 +40,7 @@ export default function ContactForm({ productSlug = null, compact = false }) {
       e.target.reset();
     } catch (err) {
       console.error(err);
-      setError('Gửi không thành công, vui lòng gọi hotline 0931.783.111.');
+      setError(`Gửi không thành công, vui lòng gọi hotline ${SITE.hotline}.`);
       setState('error');
     }
   }
