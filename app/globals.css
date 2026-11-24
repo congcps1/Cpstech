@@ -211,3 +211,12 @@ h1 { font-size: clamp(1.7rem, 3.5vw, 2.4rem); }
 .btn-yt:hover { background: #cc0000; }
 @media (max-width: 1024px) { .video-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 560px) { .video-grid { grid-template-columns: 1fr; } }
+
+/* WordPress captions/alignment inside imported content */
+.prose figure, .prose .wp-caption { width: auto !important; max-width: 100% !important; margin: 1.2em 0 !important; }
+.prose figcaption, .prose .wp-caption-text { font-size: .88rem; color: var(--muted); text-align: center; margin-top: 4px; }
+.prose .aligncenter { margin-left: auto !important; margin-right: auto !important; display: block; }
+.prose .alignleft, .prose .alignright { float: none !important; margin: 1em auto !important; }
+.prose img[width] { width: auto; }
+.prose pre, .prose code { white-space: pre-wrap; }
+.prose > div > *:first-child, .prose > *:first-child { margin-top: 0; }
