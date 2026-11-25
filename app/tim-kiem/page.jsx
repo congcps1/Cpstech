@@ -20,7 +20,7 @@ export async function generateMetadata({ searchParams }) {
 export default async function SearchPage({ searchParams }) {
   const sp = (await searchParams) || {};
   const q = String(sp.q || '').trim().slice(0, 100);
-  const [{ items, hasNext, page }, posts] = q
+  const [{ items, hasNext, page, total }, posts] = q
     ? await Promise.all([searchProducts(q, sp.trang), Number(sp.trang) > 1 ? [] : searchPosts(q)])
     : [{ items: [], hasNext: false, page: 1 }, []];
 
@@ -31,7 +31,7 @@ export default async function SearchPage({ searchParams }) {
       {q && (
         items.length ? (
           <>
-            <p className="muted">{hasNext || page > 1 ? `Trang ${page}` : `${items.length} sản phẩm`}</p>
+            <p className="muted">{total} sản phẩm{hasNext || page > 1 ? ` · Trang ${page}` : ''}</p>
             <div className="product-grid">{items.map((p) => <ProductCard key={p.slug} p={p} />)}</div>
             <Pagination base={`/tim-kiem/?q=${encodeURIComponent(q)}`} page={page} hasNext={hasNext} />
           </>
