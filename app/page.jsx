@@ -3,7 +3,7 @@ import Link from 'next/link';
 import ProductCard from '@/components/ProductCard';
 import ContactForm from '@/components/ContactForm';
 import VideoGrid from '@/components/VideoGrid';
-import { getFeaturedProducts, getLatestPosts, getCategoryShowcase } from '@/lib/db';
+import { getFeaturedProducts, getLatestPosts, getCategoryShowcase, getRandomLockers, getPostsBySlugs } from '@/lib/db';
 import { getVideos, YT_CHANNEL_URL } from '@/lib/youtube';
 import { SITE, STATIC_SEO } from '@/lib/site';
 import JsonLd from '@/components/JsonLd';
@@ -30,19 +30,25 @@ const STATS = [
   ['55+', 'Nhà cung cấp uy tín'],
 ];
 
-const PROJECTS = [
-  { title: 'Trung tâm Anh ngữ TOEIC', text: 'Hệ thống chấm công & kiểm soát cửa ra vào cho học viên, giáo viên.' },
-  { title: 'Căn hộ Vinhomes Ocean Park', text: 'Lắp đặt khóa điện tử thông minh vân tay – mã số – thẻ.' },
-  { title: 'Chuỗi nhà hàng phở', text: 'Máy chấm công khuôn mặt, quản lý ca làm cho nhân viên.' },
+// Công trình tiêu biểu: lấy từ bài viết thật (ảnh + link).
+const PROJECT_SLUGS = [
+  'thi-cong-lap-khoa-cua-van-tay-cho-12-co-so-tieng-anh-hoa-toeic',
+  'thi-cong-khoa-cua-van-tay-tai-chung-cu-vinhomes-hung-yen',
+  'thi-cong-khoa-cua-van-tay-quan-pho-10-ly-quoc-su',
 ];
 
 export default async function Home() {
-  const [featured, faceTA, posts, videos] = await Promise.all([
+  const [featuredAll, lockers, projects, faceTA, posts, videos] = await Promise.all([
     getFeaturedProducts(8),
+    getRandomLockers(4),
+    getPostsBySlugs(PROJECT_SLUGS),
     getCategoryShowcase('may-cham-cong-bang-khuon-mat', 8, ['suprema']),
     getLatestPosts(3),
     getVideos(4),
   ]);
+  // 4 ô đầu: khóa tủ locker ngẫu nhiên; 4 ô sau: sản phẩm nổi bật.
+  const lockerSlugs = new Set(lockers.map((p) => p.slug));
+  const featured = [...lockers, ...featuredAll.filter((p) => !lockerSlugs.has(p.slug))].slice(0, 8);
 
   return (
     <>
@@ -114,14 +120,12 @@ export default async function Home() {
 
       <section className="section">
         <div className="container">
-          <h2 className="section-title">Dự án tiêu biểu</h2>
+          <div className="section-head">
+            <h2 className="section-title">Dự án tiêu biểu</h2>
+            <Link href="/cong-trinh-da-thi-cong/">Xem tất cả công trình →</Link>
+          </div>
           <div className="project-grid">
-            {PROJECTS.map((p) => (
-              <div key={p.title} className="card project-card">
-                <h3>{p.title}</h3>
-                <p className="muted">{p.text}</p>
-              </div>
-            ))}
+            {projects.map((p) => <PostCard key={p.slug} p={p} />)}
           </div>
         </div>
       </section>
