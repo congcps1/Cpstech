@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { rest } from '@/lib/adminApi';
 import { formatVND } from '@/lib/site';
 import ProductEditor from './ProductEditor';
+import QuickPrice from './QuickPrice';
 
 const PAGE = 30;
 
@@ -15,6 +16,7 @@ export default function Products() {
   const [res, setRes] = useState(null);
   const [editing, setEditing] = useState(null); // slug | 'new' | null
   const [err, setErr] = useState('');
+  const [quick, setQuick] = useState(false);
 
   useEffect(() => { rest('cps_categories?select=slug,name,parent_slug&order=name').then(setCats).catch((e) => setErr(e.message)); }, []);
 
@@ -30,6 +32,14 @@ export default function Products() {
   }, [q, cat, pub, page]);
 
   useEffect(() => { const t = setTimeout(load, 250); return () => clearTimeout(t); }, [load]);
+
+  if (quick)
+    return (
+      <div>
+        <div className="adm-bar"><button className="adm-link" onClick={() => { setQuick(false); load(); }}>← Danh sách sản phẩm</button><strong>Sửa giá nhanh</strong></div>
+        <QuickPrice cats={cats} />
+      </div>
+    );
 
   if (editing)
     return <ProductEditor slug={editing === 'new' ? null : editing} cats={cats} onClose={(changed) => { setEditing(null); if (changed) load(); }} />;
@@ -49,6 +59,7 @@ export default function Products() {
           <option value="true">Đang hiện</option>
           <option value="false">Đang ẩn</option>
         </select>
+        <button className="btn btn-sm btn-ghost-dark" onClick={() => setQuick(true)}>Sửa giá nhanh</button>
         <button className="btn btn-sm" onClick={() => setEditing('new')}>+ Thêm sản phẩm</button>
       </div>
       {err && <div className="alert err">{err}</div>}
