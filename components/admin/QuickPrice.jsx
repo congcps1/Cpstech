@@ -15,7 +15,7 @@ export default function QuickPrice({ cats }) {
   const dirty = useRef(false);
 
   const load = useCallback(async () => {
-    let p = 'cps_products?select=slug,name,price,sale_price,image_url&order=name.asc&limit=500';
+    let p = 'cps_products?select=slug,name,price,sale_price,image_url,is_published&order=name.asc&limit=500';
     if (cat) p += `&category_slugs=cs.${encodeURIComponent(`{${cat}}`)}`;
     if (onlyEmpty) p += '&price=is.null';
     if (q.trim()) p += `&name=ilike.${encodeURIComponent(`*${q.trim()}*`)}`;
@@ -30,14 +30,17 @@ export default function QuickPrice({ cats }) {
     const row = rows.find((r) => r.slug === slug);
     const val = num(raw);
     if (row[field] === val) return;
-    const next = { ...row, [field]: val };
+    const patch = { [field]: val };
+    // Sản phẩm đang ẩn vì chưa có giá: điền giá gốc là tự hiện lên web.
+    if (field === 'price' && val && !row.is_published) patch.is_published = true;
+    const next = { ...row, ...patch };
     if (next.sale_price && next.price && next.sale_price >= next.price) {
       setState((s) => ({ ...s, [slug]: 'Giá KM phải nhỏ hơn giá gốc' }));
       return;
     }
     setState((s) => ({ ...s, [slug]: 'saving' }));
     try {
-      await rest(`cps_products?slug=eq.${encodeURIComponent(slug)}`, { method: 'PATCH', body: { [field]: val }, prefer: 'return=minimal' });
+      await rest(`cps_products?slug=eq.${encodeURIComponent(slug)}`, { method: 'PATCH', body: patch, prefer: 'return=minimal' });
       setRows((rs) => rs.map((r) => (r.slug === slug ? next : r)));
       setState((s) => ({ ...s, [slug]: 'ok' }));
       dirty.current = true;
@@ -64,14 +67,14 @@ export default function QuickPrice({ cats }) {
         <label className="adm-check"><input type="checkbox" checked={onlyEmpty} onChange={(e) => setOnlyEmpty(e.target.checked)} /> Chỉ sản phẩm chưa có giá</label>
         <button className="btn btn-sm" onClick={() => { revalidateSite(); dirty.current = false; alert('Đã cập nhật giá lên web.'); }}>Cập nhật lên web</button>
       </div>
-      <p className="muted">Gõ giá (chỉ số, vd 1250000), nhấn Enter để lưu và xuống dòng. Để trống = “Liên hệ báo giá”.{rows ? ` ${rows.length} sản phẩm.` : ''}</p>
+      <p className="muted">Gõ giá (chỉ số, vd 1250000), nhấn Enter để lưu và xuống dòng. Để trống = “Liên hệ báo giá”. Sản phẩm đang ẩn sẽ tự hiện lên web khi có giá gốc.{rows ? ` ${rows.length} sản phẩm.` : ''}</p>
       {!rows ? <p className="muted">Đang tải…</p> : (
         <div className="qp-table">
           <div className="qp-row qp-head"><span /><span>Sản phẩm</span><span>Giá gốc (đ)</span><span>Giá KM (đ)</span><span /></div>
           {rows.map((r) => (
             <div key={r.slug} className="qp-row">
               <span className="adm-thumb">{r.image_url ? <img src={r.image_url} alt="" loading="lazy" /> : null}</span>
-              <a href={`/${r.slug}/`} target="_blank" rel="noopener" className="qp-name">{r.name}</a>
+              <a href={`/${r.slug}/`} target="_blank" rel="noopener" className="qp-name">{r.name}{!r.is_published && <small className="qp-hidden"> · đang ẩn</small>}</a>
               <input className="qp-input" data-col="price" inputMode="numeric" defaultValue={show(r.price)} placeholder="Liên hệ"
                 onBlur={(e) => { e.target.value = show(num(e.target.value)); save(r.slug, 'price', e.target.value); }} onKeyDown={onKey} />
               <input className="qp-input" data-col="sale" inputMode="numeric" defaultValue={show(r.sale_price)} placeholder="—"
