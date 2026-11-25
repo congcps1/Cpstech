@@ -5,9 +5,16 @@ import ContactForm from '@/components/ContactForm';
 import VideoGrid from '@/components/VideoGrid';
 import { getFeaturedProducts, getLatestPosts } from '@/lib/db';
 import { getVideos, YT_CHANNEL_URL } from '@/lib/youtube';
-import { SITE } from '@/lib/site';
+import { SITE, STATIC_SEO } from '@/lib/site';
+import JsonLd from '@/components/JsonLd';
+import { organization, website } from '@/lib/schema';
 
 export const revalidate = 300;
+export const metadata = {
+  title: { absolute: STATIC_SEO.home.title },
+  description: STATIC_SEO.home.description,
+  alternates: { canonical: '/' },
+};
 
 const PERKS = [
   { icon: '🛡️', title: 'Đổi mới trong 1 tuần', text: 'Nếu có lỗi của nhà sản xuất' },
@@ -34,6 +41,8 @@ export default async function Home() {
 
   return (
     <>
+      <JsonLd data={organization()} />
+      <JsonLd data={website()} />
       <section className="hero">
         <div className="container hero-inner">
           <div>
@@ -41,12 +50,12 @@ export default async function Home() {
             <h1>Hệ thống kiểm soát ra vào, máy chấm công &amp; khóa cửa điện tử thông minh</h1>
             <p>Giải pháp an ninh trọn gói cho gia đình, văn phòng, nhà xưởng và khách sạn — tư vấn, lắp đặt, bảo hành tận nơi tại Hà Nội và TP.HCM.</p>
             <div className="hero-cta">
-              <Link href="/cua-hang" className="btn">Xem sản phẩm</Link>
+              <Link href="/cua-hang/" className="btn">Xem sản phẩm</Link>
               <a href={`tel:${SITE.hotlineTel}`} className="btn btn-ghost">Hotline {SITE.hotline}</a>
             </div>
           </div>
           <div className="hero-card card">
-            <h3>Nhận tư vấn miễn phí</h3>
+            <h2 className="h3">Nhận tư vấn miễn phí</h2>
             <p className="muted">Để lại số điện thoại, kỹ thuật viên gọi lại trong 15 phút.</p>
             <ContactForm compact />
           </div>
@@ -68,7 +77,7 @@ export default async function Home() {
         <div className="container">
           <div className="section-head">
             <h2 className="section-title">Sản phẩm nổi bật</h2>
-            <Link href="/cua-hang">Xem tất cả →</Link>
+            <Link href="/cua-hang/">Xem tất cả →</Link>
           </div>
           <div className="product-grid">
             {featured.map((p) => <ProductCard key={p.slug} p={p} />)}
@@ -103,7 +112,7 @@ export default async function Home() {
           <div className="container">
             <div className="section-head">
               <h2 className="section-title">Video</h2>
-              <Link href="/video">Xem tất cả →</Link>
+              <Link href="/video/">Xem tất cả →</Link>
             </div>
             <VideoGrid videos={videos} />
             <div style={{ textAlign: 'center', marginTop: 24 }}>
@@ -118,7 +127,7 @@ export default async function Home() {
           <div className="container">
             <div className="section-head">
               <h2 className="section-title">Tin tức &amp; hướng dẫn</h2>
-              <Link href="/tin-tuc">Xem tất cả →</Link>
+              <Link href="/tin-tuc/">Xem tất cả →</Link>
             </div>
             <div className="project-grid">
               {posts.map((p) => <PostCard key={p.slug} p={p} />)}

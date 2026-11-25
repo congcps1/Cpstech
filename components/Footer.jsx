@@ -19,21 +19,21 @@ export default function Footer() {
         </div>
         {SITE.offices.map((o) => (
           <div key={o.city}>
-            <h4>CPSTECH {o.city}</h4>
+            <p className="footer-title">CPSTECH {o.city}</p>
             <p>{o.address}</p>
             <p>ĐT: <a href={`tel:${o.tel}`}>{o.phone}</a></p>
             <p>Email: <a href={`mailto:${o.email}`}>{o.email}</a></p>
           </div>
         ))}
         <div>
-          <h4>Liên kết</h4>
+          <p className="footer-title">Liên kết</p>
           <ul className="footer-links">
             <li><Link href="/">Trang chủ</Link></li>
-            <li><Link href="/gioi-thieu-cpstech">Giới thiệu</Link></li>
-            <li><Link href="/cua-hang">Cửa hàng</Link></li>
-            <li><Link href="/tin-tuc">Tin tức</Link></li>
-            <li><Link href="/video">Video</Link></li>
-            <li><Link href="/lien-he">Liên hệ – Gửi yêu cầu</Link></li>
+            <li><Link href="/gioi-thieu-cpstech/">Giới thiệu</Link></li>
+            <li><Link href="/cua-hang/">Cửa hàng</Link></li>
+            <li><Link href="/tin-tuc/">Tin tức</Link></li>
+            <li><Link href="/video/">Video</Link></li>
+            <li><Link href="/lien-he/">Liên hệ – Gửi yêu cầu</Link></li>
           </ul>
         </div>
       </div>

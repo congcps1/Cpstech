@@ -2,9 +2,17 @@ import PostCard from '@/components/PostCard';
 import Link from 'next/link';
 import Pagination from '@/components/Pagination';
 import { getPostsPage } from '@/lib/db';
+import { STATIC_SEO } from '@/lib/site';
 
 export const revalidate = 300;
-export const metadata = { title: 'Tin tức', description: 'Hướng dẫn sử dụng, cài đặt máy chấm công, khóa vân tay và tin tức từ CPSTECH.' };
+export async function generateMetadata({ searchParams }) {
+  const n = Math.max(1, Number((await searchParams)?.trang) || 1);
+  return {
+    title: { absolute: STATIC_SEO.news.title + (n > 1 ? ` – Trang ${n}` : '') },
+    description: STATIC_SEO.news.description,
+    alternates: { canonical: '/tin-tuc/' + (n > 1 ? `?trang=${n}` : '') },
+  };
+}
 
 export default async function News({ searchParams }) {
   const sp = (await searchParams) || {};

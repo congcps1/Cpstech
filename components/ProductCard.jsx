@@ -1,11 +1,11 @@
 import Link from 'next/link';
-import { formatVND } from '@/lib/site';
+import { formatVND, href } from '@/lib/site';
 
 export default function ProductCard({ p }) {
   const hasSale = p.sale_price && p.price && p.sale_price < p.price;
   const pct = hasSale ? Math.round((1 - p.sale_price / p.price) * 100) : 0;
   return (
-    <Link href={`/${p.slug}`} className="card product-card">
+    <Link href={href(p.slug)} className="card product-card">
       <div className="product-img">
         {hasSale && <span className="badge">-{pct}%</span>}
         {p.image_url ? (

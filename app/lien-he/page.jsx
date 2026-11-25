@@ -1,9 +1,10 @@
 import ContactForm from '@/components/ContactForm';
-import { SITE } from '@/lib/site';
+import { SITE, STATIC_SEO } from '@/lib/site';
 
 export const metadata = {
-  title: 'Liên hệ',
-  description: 'Liên hệ CPSTECH – hotline/Zalo 0944.343.868, văn phòng Hà Nội (87 Lĩnh Nam) và TP.HCM (821 An Dương Vương).',
+  title: { absolute: STATIC_SEO.contact.title },
+  description: STATIC_SEO.contact.description,
+  alternates: { canonical: '/lien-he/' },
 };
 
 export default function Contact() {
@@ -15,7 +16,7 @@ export default function Contact() {
         <div>
           {SITE.offices.map((o) => (
             <div key={o.city} className="card" style={{ marginBottom: 16 }}>
-              <h3>Văn phòng {o.city}</h3>
+              <h2 className="h3">Văn phòng {o.city}</h2>
               <p>📍 {o.address}</p>
               <p>📞 <a href={`tel:${o.tel}`}>{o.phone}</a></p>
               <p>✉️ <a href={`mailto:${o.email}`}>{o.email}</a></p>
@@ -30,7 +31,7 @@ export default function Contact() {
           </div>
         </div>
         <div className="card">
-          <h3>Gửi yêu cầu tư vấn</h3>
+          <h2 className="h3">Gửi yêu cầu tư vấn</h2>
           <ContactForm />
         </div>
       </div>

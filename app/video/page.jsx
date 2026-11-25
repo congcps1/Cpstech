@@ -5,6 +5,7 @@ export const revalidate = 3600;
 export const metadata = {
   title: 'Video',
   description: 'Video hướng dẫn lắp đặt, sử dụng, sửa lỗi máy chấm công, khóa vân tay, kiểm soát ra vào từ CPSTECH.',
+  alternates: { canonical: '/video/' },
 };
 
 export default async function VideoPage() {

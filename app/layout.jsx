@@ -10,7 +10,10 @@ export const metadata = {
     template: '%s | CPSTECH',
   },
   description: SITE.description,
-  openGraph: { siteName: 'CPSTECH', locale: 'vi_VN', type: 'website' },
+  applicationName: 'CPSTECH',
+  openGraph: { siteName: 'CPSTECH', locale: 'vi_VN', type: 'website', images: ['/og-default.png'] },
+  twitter: { card: 'summary_large_image', images: ['/og-default.png'] },
+  formatDetection: { telephone: true },
 };
 
 export default function RootLayout({ children }) {
