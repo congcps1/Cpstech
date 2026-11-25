@@ -42,7 +42,7 @@ export default function Header() {
         <nav className={`nav ${open ? 'open' : ''}`}>
           {MAIN_MENU.map((m) =>
             m.children ? (
-              <div key={m.href} className={`nav-item has-sub ${sub === m.href ? 'sub-open' : ''}`} onMouseLeave={() => setSub(null)}>
+              <div key={m.href} className={`nav-item has-sub ${sub === m.href ? 'sub-open' : ''}`}>
                 <Link href={m.href} className={isActive(m) ? 'active' : ''}>{m.label}</Link>
                 <button
                   type="button"
