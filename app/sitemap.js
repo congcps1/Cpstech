@@ -11,7 +11,13 @@ export default async function sitemap() {
   const latestPost = posts.reduce((m, p) => (p.published_at > m ? p.published_at : m), '');
   return [
     ...statics.map((s) => ({ url: u(s), lastModified: s === '' || s === 'tin-tuc' ? latestPost || undefined : undefined })),
-    ...cats.map((c) => ({ url: u(c.slug) })),
+    ...cats
+      .filter((c) => {
+        const tree = new Set([c.slug]);
+        for (let grew = true; grew; ) { grew = false; for (const x of cats) if (x.parent_slug && tree.has(x.parent_slug) && !tree.has(x.slug)) { tree.add(x.slug); grew = true; } }
+        return products.some((p) => (p.category_slugs || []).some((s) => tree.has(s)));
+      })
+      .map((c) => ({ url: u(c.slug) })),
     ...postCats.filter((c) => c.slug !== 'tin-tuc').map((c) => ({ url: u(c.slug) })),
     ...products.map((p) => ({ url: u(p.slug), lastModified: p.created_at })),
     ...posts.map((p) => ({ url: u(p.slug), lastModified: p.updated_at || p.published_at })),

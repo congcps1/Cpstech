@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { formatVND, href } from '@/lib/site';
 
 export default function ProductCard({ p }) {
@@ -9,7 +10,7 @@ export default function ProductCard({ p }) {
       <div className="product-img">
         {hasSale && <span className="badge">-{pct}%</span>}
         {p.image_url ? (
-          <img src={p.image_url} alt={p.name} loading="lazy" />
+          <Image src={p.image_url} alt={p.name} width={400} height={400} sizes="(max-width: 560px) 46vw, (max-width: 1024px) 30vw, 270px" />
         ) : (
           <div className="img-placeholder">CPSTECH</div>
         )}

@@ -4,6 +4,11 @@ const STORAGE = 'https://grrgzgncwzvidwuyycdv.supabase.co/storage/v1/object/publ
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   trailingSlash: true,
+  images: {
+    formats: ['image/avif', 'image/webp'],
+    remotePatterns: [{ protocol: 'https', hostname: 'grrgzgncwzvidwuyycdv.supabase.co', pathname: '/storage/v1/object/public/**' }],
+    minimumCacheTTL: 2678400,
+  },
   async redirects() {
     return [
       // Old Rank Math / WordPress sitemaps → new sitemap

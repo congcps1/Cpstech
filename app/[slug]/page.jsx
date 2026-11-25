@@ -59,7 +59,10 @@ export async function generateMetadata({ params, searchParams }) {
 
   if (r.type === 'category') {
     const c = r.cat;
+    const all = await getCategories();
+    const { items } = await getCategoryProductsPage(descendants(all, c.slug), 1);
     return {
+      robots: items.length ? undefined : { index: false, follow: true },
       title: paged(titleOf(c.seo_title, c.name)),
       description: c.seo_description || c.description || `${c.name} chính hãng tại CPSTECH. Tư vấn, lắp đặt, bảo hành tận nơi. Hotline ${SITE.hotline}.`,
       alternates: { canonical },
