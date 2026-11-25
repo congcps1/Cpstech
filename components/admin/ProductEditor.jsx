@@ -14,6 +14,7 @@ export default function ProductEditor({ slug, cats, onClose }) {
   const [uploading, setUploading] = useState(0);
   const [preview, setPreview] = useState(false);
   const [slugTouched, setSlugTouched] = useState(false);
+  const [mark, setMark] = useState(() => { try { return localStorage.getItem('cps_wm') !== '0'; } catch { return true; } });
   const fileRef = useRef(null);
   const set = (k, v) => setP((x) => ({ ...x, [k]: v }));
 
@@ -42,7 +43,7 @@ export default function ProductEditor({ slug, cats, onClose }) {
     const list = [...files];
     setUploading(list.length);
     for (const f of list) {
-      try { const url = await uploadImage(f, p.slug || p.name || 'san-pham'); setP((x) => ({ ...x, images: [...x.images, url] })); }
+      try { const url = await uploadImage(f, p.slug || p.name || 'san-pham', { watermark: mark }); setP((x) => ({ ...x, images: [...x.images, url] })); }
       catch (e) { alert(`${f.name}: ${e.message}`); }
       setUploading((n) => n - 1);
     }
@@ -134,7 +135,10 @@ export default function ProductEditor({ slug, cats, onClose }) {
               <button type="button" className="adm-img adm-add" onClick={() => fileRef.current?.click()}>{uploading ? `Đang tải ${uploading}…` : '+ Tải ảnh lên'}</button>
             </div>
             <input ref={fileRef} type="file" accept="image/*" multiple hidden onChange={(e) => { onFiles(e.target.files); e.target.value = ''; }} />
-            <button type="button" className="adm-link" onClick={addUrl}>+ Thêm ảnh bằng link</button>
+            <div className="adm-row-between">
+              <label className="adm-check"><input type="checkbox" checked={mark} onChange={(e) => { setMark(e.target.checked); try { localStorage.setItem('cps_wm', e.target.checked ? '1' : '0'); } catch { /* ignore */ } }} /> Đóng logo CPSTECH lên ảnh tải lên (bỏ chọn với ảnh của hãng)</label>
+              <button type="button" className="adm-link" onClick={addUrl}>+ Thêm ảnh bằng link</button>
+            </div>
           </section>
 
           <section className="card form">
