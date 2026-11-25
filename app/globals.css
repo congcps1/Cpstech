@@ -141,7 +141,14 @@ h1 { font-size: clamp(1.7rem, 3.5vw, 2.4rem); }
 .chip { border: 1px solid var(--line); padding: .4em 1em; border-radius: 999px; font-size: .9rem; background: #fff; }
 .chip:hover { border-color: var(--accent); color: var(--accent); }
 .empty { text-align: center; padding: 40px; }
-.product-detail { display: grid; grid-template-columns: 1fr 1.1fr; gap: 40px; margin-bottom: 32px; }
+.product-detail { display: grid; grid-template-columns: 1fr 1.1fr; grid-template-areas: "g i" "p i"; grid-template-rows: auto 1fr; gap: 24px 40px; margin-bottom: 32px; }
+.pd-gallery { grid-area: g; min-width: 0; }
+.pd-info { grid-area: i; min-width: 0; }
+.pd-perks { grid-area: p; align-self: start; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.pd-perk { display: flex; gap: 12px; align-items: flex-start; padding: 14px; border: 1px solid var(--line); border-radius: var(--radius); background: #fbfcfd; }
+.pd-perk-ico { flex: none; width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; background: #fdf0ec; font-size: 1.2rem; }
+.pd-perk strong { display: block; color: var(--navy); font-size: .95rem; line-height: 1.3; }
+.pd-perk small { display: block; color: var(--muted, #5b6b80); font-size: .82rem; line-height: 1.4; margin-top: 2px; }
 .product-detail-img { display: grid; place-items: center; aspect-ratio: 1; }
 .product-detail-img img { max-height: 100%; object-fit: contain; }
 .checks { list-style: none; padding: 0; }
@@ -197,11 +204,15 @@ h1 { font-size: clamp(1.7rem, 3.5vw, 2.4rem); }
   .nav .submenu-link, .nav .submenu-all { border-bottom: 0; padding: .55rem 1rem; font-size: .95rem; }
   .nav .submenu-child { padding-left: 1.8rem; font-size: .9rem; }
   .hero-inner, .product-detail, .contact-grid { grid-template-columns: 1fr; }
+  .product-detail { grid-template-areas: "g" "i" "p"; grid-template-rows: auto; }
   .perks-grid, .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .project-grid { grid-template-columns: 1fr; }
   .topbar-inner span:first-child { display: none; }
 }
 @media (max-width: 560px) {
+  .pd-perks { gap: 8px; }
+  .pd-perk { flex-direction: column; gap: 6px; padding: 10px; }
+  .pd-perk-ico { width: 34px; height: 34px; font-size: 1rem; }
   .product-grid, .cat-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .form-row { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; }

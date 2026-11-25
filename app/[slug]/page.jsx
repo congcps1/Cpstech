@@ -174,8 +174,8 @@ export default async function SlugPage({ params, searchParams }) {
         <JsonLd data={breadcrumb(trail)} />
         <Breadcrumb trail={trail} />
         <div className="product-detail">
-          <Gallery images={images} alt={p.name} />
-          <div>
+          <div className="pd-gallery"><Gallery images={images} alt={p.name} /></div>
+          <div className="pd-info">
             {p.brand && <span className="brand">{p.brand}</span>}
             <h1>{p.name}</h1>
             <div className="price price-lg">
@@ -187,12 +187,6 @@ export default async function SlugPage({ params, searchParams }) {
               ) : <strong className="contact-price">Liên hệ báo giá</strong>}
             </div>
             {p.short_html ? <div className="prose short" dangerouslySetInnerHTML={{ __html: p.short_html }} /> : null}
-            <ul className="checks">
-              <li>Sản phẩm chính hãng, đầy đủ hóa đơn VAT</li>
-              <li>Đổi mới trong 1 tuần nếu có lỗi của nhà sản xuất</li>
-              <li>Giao hàng trong 2 giờ nội thành, lắp đặt tận nơi</li>
-              <li>Kiểm tra hàng rồi mới thanh toán</li>
-            </ul>
             <div className="hero-cta">
               <a className="btn" href={`tel:${SITE.hotlineTel}`}>Gọi đặt hàng {SITE.hotline}</a>
               <a className="btn btn-ghost-dark" href={SITE.zalo} target="_blank" rel="noopener">Chat Zalo</a>
@@ -201,6 +195,21 @@ export default async function SlugPage({ params, searchParams }) {
               <h2 className="h3">Yêu cầu báo giá sản phẩm này</h2>
               <ContactForm productSlug={p.slug} compact />
             </div>
+          </div>
+          <div className="pd-perks">
+            {[
+              ['🛡️', 'Chính hãng 100%', 'Đầy đủ hóa đơn VAT, CO/CQ'],
+              ['🔄', 'Đổi mới trong 1 tuần', 'Nếu có lỗi của nhà sản xuất'],
+              ['🚚', 'Giao nhanh 2 giờ', 'Nội thành Hà Nội, TP.HCM; ship toàn quốc'],
+              ['🔧', 'Lắp đặt tận nơi', 'Kỹ thuật hỗ trợ 24/24'],
+              ['💵', 'Kiểm tra rồi thanh toán', 'Xem hàng trước khi trả tiền'],
+              ['📞', 'Tư vấn miễn phí', `Hotline/Zalo ${SITE.hotline}`],
+            ].map(([i, t, d]) => (
+              <div key={t} className="pd-perk">
+                <span className="pd-perk-ico" aria-hidden="true">{i}</span>
+                <span><strong>{t}</strong><small>{d}</small></span>
+              </div>
+            ))}
           </div>
         </div>
         {p.content && (
