@@ -42,3 +42,15 @@ npm run dev
 - Nhập ngày 24/11/2026 qua WordPress REST API công khai (`/wp-json/wc/store/v1/products`, `/wp-json/wp/v2/posts`, `/wp-json/wp/v2/pages`). Dữ liệu gốc lưu trong `cps_import_data`.
 - Ảnh được chép sang Supabase Storage, bucket công khai `cpstech` (cùng cấu trúc thư mục `YYYY/MM/` như `wp-content/uploads`, tên file bỏ dấu). Hàng chờ: bảng `cps_media`; hàm sao chép: Edge Function `cps-media-copy`.
 - 30 ảnh không chép được vì đã mất trên chính site cũ (xem `cps_media` có `status='error'`).
+
+## SEO & tên miền (chuyển từ WordPress, 25/11/2026)
+
+- URL giữ y hệt site WordPress cũ, có dấu `/` cuối (`trailingSlash: true`).
+- Tiêu đề/mô tả lấy nguyên từ Rank Math của site cũ (cột `seo_title`, `seo_description`). Trang tĩnh: `STATIC_SEO` trong `lib/site.js`.
+- Chuyển hướng 301/308:
+  - `next.config.mjs`: sitemap cũ, `/page/N/`, `/feed/`, `/tu-khoa-san-pham/...`, `/wp-content/uploads/...` → Supabase Storage.
+  - Bảng `cps_redirects`: slug cũ → trang mới (link nội bộ hỏng, trang WooCommerce, 2 chuyển hướng Rank Math).
+  - Slug không tồn tại: đoán như WordPress (bài/sản phẩm có slug bắt đầu bằng slug đó).
+- `middleware.js`: `www` → `cpstech.vn` (301); mọi host khác `cpstech.vn` gửi `X-Robots-Tag: noindex`.
+- Schema JSON-LD: Organization + WebSite (trang chủ), Product, BlogPosting, BreadcrumbList (`lib/schema.js`).
+- Danh sách 400 URL của sitemap cũ + tiêu đề/mô tả gốc: bảng `cps_seo_stage`.
