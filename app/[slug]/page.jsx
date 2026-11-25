@@ -11,7 +11,7 @@ import {
   getPost, getPage, getLatestPosts, getPostCategory, getPostsPage, getRedirect, guessSlug, descendants,
 } from '@/lib/db';
 import { SITE, formatVND, href, CATEGORY_FILTERS } from '@/lib/site';
-import { breadcrumb, product as productLd, article as articleLd } from '@/lib/schema';
+import { breadcrumb, product as productLd, article as articleLd , faqPage } from '@/lib/schema';
 
 export const revalidate = 300;
 
@@ -168,6 +168,21 @@ export default async function SlugPage({ params, searchParams }) {
             <p>Danh mục đang được cập nhật sản phẩm. Vui lòng liên hệ để được tư vấn và báo giá.</p>
             <a className="btn" href={`tel:${SITE.hotlineTel}`}>Gọi {SITE.hotline}</a>
           </div>
+        )}
+        {page === 1 && !filter && cat.content_html && (
+          <section className="card prose cat-content" dangerouslySetInnerHTML={{ __html: cat.content_html }} />
+        )}
+        {page === 1 && !filter && Array.isArray(cat.faq) && cat.faq.length > 0 && (
+          <section className="card cat-faq">
+            <JsonLd data={faqPage(cat.faq)} />
+            <h2>Câu hỏi thường gặp về {cat.name.toLowerCase()}</h2>
+            {cat.faq.map((f) => (
+              <details key={f.q}>
+                <summary>{f.q}</summary>
+                <div className="prose" dangerouslySetInnerHTML={{ __html: f.a_html || f.a }} />
+              </details>
+            ))}
+          </section>
         )}
       </div>
     );
