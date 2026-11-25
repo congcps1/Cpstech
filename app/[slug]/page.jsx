@@ -10,7 +10,7 @@ import {
   getCategories, getCategory, getProduct, getCategoryProductsPage, getRelatedProducts,
   getPost, getPage, getLatestPosts, getPostCategory, getPostsPage, getRedirect, guessSlug, descendants,
 } from '@/lib/db';
-import { SITE, formatVND, href } from '@/lib/site';
+import { SITE, formatVND, href, CATEGORY_FILTERS } from '@/lib/site';
 import { breadcrumb, product as productLd, article as articleLd } from '@/lib/schema';
 
 export const revalidate = 300;
@@ -62,7 +62,7 @@ export async function generateMetadata({ params, searchParams }) {
     const all = await getCategories();
     const { items } = await getCategoryProductsPage(descendants(all, c.slug), 1);
     return {
-      robots: items.length ? undefined : { index: false, follow: true },
+      robots: items.length && !sp?.loai ? undefined : { index: false, follow: true },
       title: paged(titleOf(c.seo_title, c.name)),
       description: c.seo_description || c.description || `${c.name} chính hãng tại CPSTECH. Tư vấn, lắp đặt, bảo hành tận nơi. Hotline ${SITE.hotline}.`,
       alternates: { canonical },
@@ -132,8 +132,11 @@ export default async function SlugPage({ params, searchParams }) {
     const all = await getCategories();
     const { cat } = r;
     const children = all.filter((c) => c.parent_slug === cat.slug);
-    const { items, hasNext, page } = await getCategoryProductsPage(descendants(all, cat.slug), sp.trang);
+    const filters = CATEGORY_FILTERS[cat.slug] || [];
+    const filter = filters.find((f) => f.key === sp.loai) || null;
+    const { items, hasNext, page } = await getCategoryProductsPage(descendants(all, cat.slug), sp.trang, filter);
     const trail = trailOf(all, cat.slug);
+    const base = href(cat.slug);
     return (
       <div className="container page">
         <JsonLd data={breadcrumb(trail)} />
@@ -145,11 +148,20 @@ export default async function SlugPage({ params, searchParams }) {
             {children.map((c) => <Link key={c.slug} href={href(c.slug)} className="chip">{c.name}</Link>)}
           </div>
         )}
+        {filters.length > 0 && (
+          <nav className="filter-bar" aria-label="Lọc sản phẩm">
+            <span className="filter-label">Lọc theo loại:</span>
+            <Link href={base} className={`chip ${!filter ? 'chip-on' : ''}`} scroll={false}>Tất cả</Link>
+            {filters.map((f) => (
+              <Link key={f.key} href={`${base}?loai=${f.key}`} className={`chip ${filter?.key === f.key ? 'chip-on' : ''}`} scroll={false} rel="nofollow">{f.label}</Link>
+            ))}
+          </nav>
+        )}
         {items.length ? (
           <>
-            <h2 className="sr-only">Sản phẩm {cat.name}</h2>
+            <h2 className="sr-only">Sản phẩm {filter ? filter.label : cat.name}</h2>
             <div className="product-grid">{items.map((p) => <ProductCard key={p.slug} p={p} />)}</div>
-            <Pagination base={href(cat.slug)} page={page} hasNext={hasNext} />
+            <Pagination base={filter ? `${base}?loai=${filter.key}` : base} page={page} hasNext={hasNext} />
           </>
         ) : (
           <div className="empty card">

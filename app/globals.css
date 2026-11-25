@@ -140,6 +140,9 @@ h1 { font-size: clamp(1.7rem, 3.5vw, 2.4rem); }
 .chips { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0 0 1.5rem; }
 .chip { border: 1px solid var(--line); padding: .4em 1em; border-radius: 999px; font-size: .9rem; background: #fff; }
 .chip:hover { border-color: var(--accent); color: var(--accent); }
+.filter-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin: 0 0 1.5rem; padding: .8rem 1rem; background: #f7f9fc; border: 1px solid var(--line); border-radius: var(--radius); }
+.filter-label { font-weight: 600; color: var(--navy); font-size: .9rem; margin-right: .3rem; }
+.chip.chip-on { background: var(--accent); border-color: var(--accent); color: #fff; }
 .empty { text-align: center; padding: 40px; }
 .product-detail { display: grid; grid-template-columns: 1fr 1.1fr; grid-template-areas: "g i" "p i"; grid-template-rows: auto 1fr; gap: 24px 40px; margin-bottom: 32px; }
 .pd-gallery { grid-area: g; min-width: 0; }
