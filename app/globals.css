@@ -455,3 +455,8 @@ h1 { font-size: clamp(1.7rem, 3.5vw, 2.4rem); }
 .cat-faq summary { font-weight: 600; cursor: pointer; color: var(--navy); }
 .cat-faq details .prose { margin-top: 8px; }
 @media (max-width: 560px) { .cat-content { overflow-x: auto; } }
+/* Lưới ảnh trong bài */
+.prose .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin: 12px 0 20px; }
+.prose .photo-grid figure { margin: 0; }
+.prose .photo-grid img { width: 100%; aspect-ratio: 3/4; object-fit: cover; margin: 0; border-radius: 8px; }
+.prose .photo-grid figcaption { font-size: .82rem; color: var(--muted); margin-top: 4px; }
