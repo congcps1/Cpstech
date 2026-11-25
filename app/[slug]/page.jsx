@@ -69,7 +69,7 @@ export async function generateMetadata({ params, searchParams }) {
     const p = r.product;
     return {
       title: titleOf(p.seo_title, p.name),
-      description: (p.seo_description || p.summary || `${p.name} – chính hãng, đổi mới trong 1 tuần. Liên hệ CPSTECH ${SITE.hotline}.`).slice(0, 300),
+      description: p.seo_description || (p.summary || `${p.name} – chính hãng, đổi mới trong 1 tuần. Liên hệ CPSTECH ${SITE.hotline}.`).slice(0, 300),
       alternates: { canonical },
       openGraph: { type: 'website', images: p.image_url ? [p.image_url] : undefined },
     };
@@ -78,7 +78,7 @@ export async function generateMetadata({ params, searchParams }) {
     const p = r.post;
     return {
       title: titleOf(p.seo_title, p.title),
-      description: (p.seo_description || p.excerpt || '').slice(0, 300),
+      description: p.seo_description || (p.excerpt || '').slice(0, 300),
       alternates: { canonical },
       openGraph: { type: 'article', publishedTime: p.published_at, modifiedTime: p.updated_at || undefined, images: p.cover_url ? [p.cover_url] : undefined },
     };
@@ -94,7 +94,7 @@ export async function generateMetadata({ params, searchParams }) {
   const pg = r.page;
   return {
     title: titleOf(pg.seo_title, pg.title),
-    description: (pg.seo_description || strip(pg.content)).slice(0, 300),
+    description: pg.seo_description || strip(pg.content).slice(0, 300),
     alternates: { canonical },
   };
 }
