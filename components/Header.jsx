@@ -3,12 +3,14 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { SITE, MAIN_MENU } from '@/lib/site';
+import SearchBox from './SearchBox';
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [sub, setSub] = useState(null); // submenu đang mở (mobile / bàn phím)
+  const [search, setSearch] = useState(false);
   const pathname = usePathname();
-  useEffect(() => { setOpen(false); setSub(null); }, [pathname]);
+  useEffect(() => { setOpen(false); setSub(null); setSearch(false); }, [pathname]);
   const isActive = (m) =>
     pathname === m.href || (m.children || []).some((c) => pathname === c.href || (c.children || []).some((g) => pathname === g.href));
 
@@ -30,6 +32,17 @@ export default function Header() {
             <small>{SITE.tagline}</small>
           </span>
         </Link>
+        <button
+          type="button"
+          className={`search-toggle ${search ? 'on' : ''}`}
+          aria-label={search ? 'Đóng tìm kiếm' : 'Tìm kiếm sản phẩm'}
+          aria-expanded={search}
+          onClick={() => { setSearch((v) => !v); setOpen(false); }}
+        >
+          {search ? <span aria-hidden="true">✕</span> : (
+            <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" strokeWidth="2.2" /><path d="M20 20l-4-4" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" /></svg>
+          )}
+        </button>
         <button
           type="button"
           className="nav-burger"
@@ -74,6 +87,11 @@ export default function Header() {
           <a className="btn btn-sm" href={`tel:${SITE.hotlineTel}`}>Gọi ngay</a>
         </nav>
       </div>
+      {search && (
+        <div className="search-panel">
+          <div className="container"><SearchBox autoFocus onDone={() => setSearch(false)} /></div>
+        </div>
+      )}
     </header>
   );
 }

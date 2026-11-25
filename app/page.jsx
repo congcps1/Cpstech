@@ -3,7 +3,7 @@ import Link from 'next/link';
 import ProductCard from '@/components/ProductCard';
 import ContactForm from '@/components/ContactForm';
 import VideoGrid from '@/components/VideoGrid';
-import { getFeaturedProducts, getLatestPosts } from '@/lib/db';
+import { getFeaturedProducts, getLatestPosts, getCategoryShowcase } from '@/lib/db';
 import { getVideos, YT_CHANNEL_URL } from '@/lib/youtube';
 import { SITE, STATIC_SEO } from '@/lib/site';
 import JsonLd from '@/components/JsonLd';
@@ -37,7 +37,12 @@ const PROJECTS = [
 ];
 
 export default async function Home() {
-  const [featured, posts, videos] = await Promise.all([getFeaturedProducts(8), getLatestPosts(3), getVideos(4)]);
+  const [featured, faceTA, posts, videos] = await Promise.all([
+    getFeaturedProducts(8),
+    getCategoryShowcase('may-cham-cong-bang-khuon-mat', 8, ['suprema']),
+    getLatestPosts(3),
+    getVideos(4),
+  ]);
 
   return (
     <>
@@ -84,6 +89,20 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {faceTA.length > 0 && (
+        <section className="section">
+          <div className="container">
+            <div className="section-head">
+              <h2 className="section-title">Máy chấm công khuôn mặt</h2>
+              <Link href="/may-cham-cong-bang-khuon-mat/">Xem tất cả →</Link>
+            </div>
+            <div className="product-grid">
+              {faceTA.map((p) => <ProductCard key={p.slug} p={p} />)}
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="stats">
         <div className="container stats-grid">
